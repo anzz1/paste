@@ -22,7 +22,7 @@ return [
     | Name of your application.
     |
     */
-    'app_name' => 'My Gists',
+    'app_name' => 'Pastebin',
 
     /*
     |--------------------------------------------------------------------------
@@ -45,5 +45,15 @@ return [
     | Ref: https://www.php.net/manual/en/timezones.php
     |
     */
-    'app_timezone' => 'Asia/Jakarta',
+    'app_timezone' => 'UTC',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Use Short URL
+    |--------------------------------------------------------------------------
+    |
+    | Whether to use the short url /id instead of index.php?p=id
+    |
+    */
+    'use_short_url' => true,
 ];

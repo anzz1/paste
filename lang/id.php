@@ -18,7 +18,6 @@ return [
     'save' => 'Simpan',
     'wrap_code' => 'Bungkus kode panjang',
     'syntax_highlighter' => 'Syntax highlighter',
-    'tab_allowed' => 'Tombol TAB boleh dipakai',
     'raw' => 'Raw',
     'write_new' => 'Tulis Baru',
     'gist_not_found' => 'Duh, gist tidak ditemukan :(',

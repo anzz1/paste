@@ -10,16 +10,20 @@ final class Gists
     private $language;
     private $html = [];
     private $pdo;
+    private $use_short_url;
 
-    public function __construct($title, $appkey, $language = 'en', $timezone = 'UTC')
+    public function __construct($title, $appkey, $language = 'en', $timezone = 'UTC', $use_short_url = false)
     {
         $this->language($language);
+        $this->use_short_url = $use_short_url;
 
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'on') {
-            exit($this->language['error_suspicious_access']);
-        }
+        //if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'on') {
+        //    exit($this->language['error_suspicious_access']);
+        //}
 
-        if (! $appkey || '' === trim($appkey)) {
+		$appkey = trim($appkey);
+
+        if (empty($appkey)) {
             exit($this->language['error_appkey']);
         }
 
@@ -28,7 +32,7 @@ final class Gists
 
         try {
             if (! $this->pdo) {
-                $appkey = md5(rtrim($appkey, '.sqlite')).'.sqlite';
+                $appkey = md5($appkey).'.sqlite';
                 $this->pdo = new \PDO('sqlite:'.$appkey);
                 $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
                 $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
@@ -74,10 +78,10 @@ final class Gists
             echo $value;
         }
 
-        echo '<div id="footer">';
-        echo $this->language['footer_text'];
-        echo '<p><a href="./">'.$this->language['back_home'].'</a></p>';
-        echo '</div>';
+        //echo '<div id="footer">';
+        //echo $this->language['footer_text'];
+        //echo '<p><a href="./">'.$this->language['back_home'].'</a></p>';
+        //echo '</div>';
         echo '</body>';
         echo '</html>';
         exit;
@@ -137,7 +141,7 @@ final class Gists
                  </ul>
                  <input type="text" id="content" name="content"
                  placeholder="Do not fill me!" style="display: none;"/>
-                 <textarea autofocus required name="p" placeholder="'.$this->language['tab_allowed'].'.."></textarea>
+                 <textarea autofocus required name="p"></textarea>
             </form>'
         );
         $this->html('<script src="./assets/js/textarea.js"></script>');
@@ -193,6 +197,7 @@ final class Gists
     public function make($expiry, $prettify, $wrap, $data)
     {
         $this->guard();
+        $this->sweep();
 
         $expiry = (int) $expiry;
 
@@ -210,7 +215,7 @@ final class Gists
         $query->bindValue(':data', $data, \PDO::PARAM_STR);
         $query->execute();
 
-        if (is_file(__DIR__.DS.'.htaccess')) {
+        if ($this->use_short_url) {
             header('Location: ./'.$uniqid);
             exit;
         }
